@@ -4,33 +4,45 @@ import { useEffect, useState } from 'react';
 function App() {
   // interface TodoList = Todo[];
   interface Todo {
-    todo: String;
-    created: Date;
-    active: boolean; // uncompleted = true, completed = false
+    [text: string]: any;
+    // created: Date;
+    isChecked: boolean;
+  };
+
+  interface TodoList {
+    [todo: string]: Todo;
   };
   
-  const [todoList, setTodoList] = useState([{
-    todo: 'Pick up kids',
-    created: new Date(),
-    active: true
-  }] as Todo[]);
+  const [todoList, setTodoList] = useState({
+    'Pick up kids': {
+      text: 'Pick up kids',
+      isChecked: false
+    }
+    // created: new Date(),
+  } as TodoList);
 
-  const addTodo = () => {
-    // return (
-    //   <input></input>
-    // )
+  const checkTodo = (todo: Todo, state: boolean) => {
+    const newTodoList: TodoList = {...todoList};
+    newTodoList[todo.text] = {todo.text: {text: todo.text, isChecked: state}};
+    console.log('What is the new TodoList:', newTodoList)
+    setTodoList(newTodoList);
   };
 
-  const sortList = (list: Todo[], by?: String) => {
-    // else Date
-    setTodoList(list.sort((a,b) => a.created.getTime() - b.created.getTime()))
+  const addTodo = () => {
+    console.log('TODO: add a addTodo');
   }
+
+  // const sortList = (list: Todo[], by?: String) => {
+    // else Date
+    // setTodoList(list.sort((a,b) => a.created.getTime() - b.created.getTime()))
+  // }
 
   // TODO: add checkTodo
   // TODO: add delete todo
   // TODO: add order property to todo of number
 
-  useEffect(() => {},[todoList])
+  useEffect(() => {
+  },[todoList])
   
   return (
     <div className="App">
@@ -40,15 +52,15 @@ function App() {
       <main>
         <ul className="todoList">
           {todoList.map((item) => {
-            if (item.active) {
+            if (!item.isChecked) {
               return(
-                <li className="todo">
+                <li className="todo" key={item.todo.toString()}>
                     <input 
                       type="checkbox"
-                      checked={!item.active}
-                      onClick={() => {console.log('click checkbox for: ', item.todo)}}
+                      checked={item.isChecked}
+                      onClick={() => {checkTodo(item.text, !item.isChecked)}}
                     />
-                    <p>{item.todo}</p>
+                    <p>{item.text}</p>
                 </li>
                 )
             }
